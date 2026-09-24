@@ -20,17 +20,27 @@ const refreshApp = () => {
 <style>
 .app-container {
   display: flex;
+  flex-direction: row;
   width: 100%;
   height: 100vh;
+  height: 100dvh;
   margin: 0;
   padding: 0;
   overflow: hidden;
   position: relative;
 }
 
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+}
+
 .game-wrapper {
   flex: 1;
   position: relative;
+  min-height: 0;
+  min-width: 0;
 }
 
 .refresh-button {

@@ -61,6 +61,18 @@ watch(termiteInterval, updateTermiteInterval, { immediate: true });
   flex-direction: column;
   gap: 20px;
   border-left: 2px solid #555;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .game-menu {
+    width: 100%;
+    height: auto;
+    border-left: none;
+    border-top: 2px solid #555;
+    padding: 10px;
+    gap: 10px;
+  }
 }
 
 .menu-items {
