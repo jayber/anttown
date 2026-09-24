@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import PhaserGame from './components/PhaserGame.vue'
 import GameMenu from './components/GameMenu.vue'
+
+const refreshApp = () => {
+  window.location.reload();
+};
 </script>
 
 <template>
   <div class="app-container">
+    <button class="refresh-button" @click="refreshApp">Refresh</button>
     <div class="game-wrapper">
       <PhaserGame />
     </div>
@@ -20,10 +25,30 @@ import GameMenu from './components/GameMenu.vue'
   margin: 0;
   padding: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .game-wrapper {
   flex: 1;
   position: relative;
+}
+
+.refresh-button {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  padding: 8px 16px;
+  background-color: #555;
+  color: white;
+  border: 1px solid #777;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.refresh-button:hover {
+  background-color: #777;
 }
 </style>
