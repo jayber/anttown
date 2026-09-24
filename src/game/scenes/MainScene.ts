@@ -10,6 +10,7 @@ export class MainScene extends Phaser.Scene {
     private smellLocation: Phaser.Math.Vector2 | null = null;
     private termiteSpawnEvent!: Phaser.Time.TimerEvent;
     private antLifespan: number = 600000; // Default 10 minutes in ms
+    private lastStatsUpdate: number = 0;
 
     constructor() {
         super('MainScene');
@@ -45,7 +46,7 @@ export class MainScene extends Phaser.Scene {
 
         // Listen for lifespan changes from Vue
         const updateHandler = (event: any) => {
-            this.antLifespan = event.detail * 60000;
+            this.antLifespan = event.detail * 1000;
         };
         window.addEventListener('update-ant-lifespan', updateHandler);
 
@@ -166,6 +167,21 @@ export class MainScene extends Phaser.Scene {
                 this.updateTermite(termite, delta);
             });
         }
+
+        this.updateStats();
+    }
+
+    private updateStats() {
+        const now = this.time.now;
+        if (now - this.lastStatsUpdate < 200) return;
+        this.lastStatsUpdate = now;
+
+        window.dispatchEvent(new CustomEvent('game-stats-update', {
+            detail: {
+                time: now,
+                ants: this.ants.getLength()
+            }
+        }));
     }
 
     private updateTermite(termite: Phaser.GameObjects.Sprite, delta: number) {

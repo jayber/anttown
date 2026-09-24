@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 
-const antLifespan = ref(10);
+const antLifespan = ref(600);
 const termiteInterval = ref(4);
+
+const formattedAntLifespan = computed(() => {
+  const seconds = antLifespan.value;
+  if (seconds < 60) return `${seconds}s`;
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return secs > 0 ? `${mins}m ${secs}s` : `${mins}m`;
+});
 
 const updateLifespan = () => {
   window.dispatchEvent(new CustomEvent('update-ant-lifespan', { detail: antLifespan.value }));
@@ -24,13 +32,13 @@ watch(termiteInterval, updateTermiteInterval, { immediate: true });
       
       <div class="settings-section">
         <div class="setting-item">
-          <label>Ant Lifespan: {{ antLifespan }} min</label>
+          <label>Ant Lifespan: {{ formattedAntLifespan }}</label>
           <input 
             type="range" 
             v-model.number="antLifespan" 
-            min="1" 
-            max="60" 
-            step="1"
+            min="10" 
+            max="1200" 
+            step="10"
           />
         </div>
         <div class="setting-item">
@@ -38,9 +46,9 @@ watch(termiteInterval, updateTermiteInterval, { immediate: true });
           <input 
             type="range" 
             v-model.number="termiteInterval" 
-            min="1" 
-            max="60" 
-            step="1"
+            min="0.1" 
+            max="30" 
+            step="0.1"
           />
         </div>
       </div>

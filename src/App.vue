@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PhaserGame from './components/PhaserGame.vue'
 import GameMenu from './components/GameMenu.vue'
+import GameStats from './components/GameStats.vue'
 
 const refreshApp = () => {
   window.location.reload();
@@ -12,6 +13,7 @@ const refreshApp = () => {
     <button class="refresh-button" @click="refreshApp">Refresh</button>
     <div class="game-wrapper">
       <PhaserGame />
+      <GameStats />
     </div>
     <GameMenu />
   </div>
