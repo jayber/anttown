@@ -8,6 +8,8 @@ export class MainScene extends Phaser.Scene {
     private termiteSpeed: number = 100;
     private eggZones: Phaser.GameObjects.Arc[] = [];
     private smellLocation: Phaser.Math.Vector2 | null = null;
+    private termiteSpawnEvent!: Phaser.Time.TimerEvent;
+    private antLifespan: number = 600000; // Default 10 minutes in ms
 
     constructor() {
         super('MainScene');
@@ -34,11 +36,35 @@ export class MainScene extends Phaser.Scene {
         });
 
         // Spawn termite periodically
-        this.time.addEvent({
+        this.termiteSpawnEvent = this.time.addEvent({
             delay: 4000,
             callback: this.spawnTermite,
             callbackScope: this,
             loop: true
+        });
+
+        // Listen for lifespan changes from Vue
+        const updateHandler = (event: any) => {
+            this.antLifespan = event.detail * 60000;
+        };
+        window.addEventListener('update-ant-lifespan', updateHandler);
+
+        const termiteUpdateHandler = (event: any) => {
+            const newDelay = event.detail * 1000;
+            if (this.termiteSpawnEvent) {
+                this.termiteSpawnEvent.reset({
+                    delay: newDelay,
+                    callback: this.spawnTermite,
+                    callbackScope: this,
+                    loop: true
+                });
+            }
+        };
+        window.addEventListener('update-termite-spawn-interval', termiteUpdateHandler);
+        
+        this.events.once('shutdown', () => {
+            window.removeEventListener('update-ant-lifespan', updateHandler);
+            window.removeEventListener('update-termite-spawn-interval', termiteUpdateHandler);
         });
     }
 
@@ -55,9 +81,9 @@ export class MainScene extends Phaser.Scene {
                 ant.setAlpha(1);
             }
         });
-
-        // Ant lifespan (10 minutes)
-        this.time.delayedCall(600000, () => {
+        
+        // Ant lifespan
+        this.time.delayedCall(this.antLifespan, () => {
             if (ant.active) {
                 ant.destroy();
             }
